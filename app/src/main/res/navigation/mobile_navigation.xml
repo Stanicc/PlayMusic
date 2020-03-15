@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation">
+
+    <fragment
+        android:id="@+id/nav_main"
+        android:name="stanic.playmusic.view.fragment.MainFragment"
+        android:label="Main"
+        tools:layout="@layout/fragment_main" />
+
+    <fragment
+        android:id="@+id/nav_musics"
+        android:name="stanic.playmusic.view.fragment.MusicsFragment"
+        android:label="Musics"
+        tools:layout="@layout/fragment_musics" />
+</navigation>
