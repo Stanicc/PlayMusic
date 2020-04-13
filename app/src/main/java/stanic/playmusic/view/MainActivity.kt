@@ -2,15 +2,15 @@ package stanic.playmusic.view
 
 import android.os.Bundle
 import android.view.Menu
-import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.android.synthetic.main.activity_navigation.*
+import kotlinx.android.synthetic.main.fragment_main.*
 import stanic.playmusic.R
 import stanic.playmusic.view.fragment.MusicsFragment
 
@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         //NavigationDrawer configuration
-        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
+        val drawerLayout = drawer_layout
         appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.nav_home, R.id.nav_musics
@@ -52,12 +52,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun registerButtonsEvents() {
-        findViewById<ImageButton>(R.id.menuButton).setOnClickListener {
-            findViewById<DrawerLayout>(R.id.drawer_layout).openDrawer(GravityCompat.START)
-        }
-        findViewById<ImageButton>(R.id.menuButtonMusics).setOnClickListener { findViewById<DrawerLayout>(R.id.drawer_layout).openDrawer(GravityCompat.START) }
+        menuButton.setOnClickListener { drawer_layout.openDrawer(GravityCompat.START) }
 
-        findViewById<ImageButton>(R.id.musicsButton).setOnClickListener {
+        musicsButton.setOnClickListener {
             val transaction = supportFragmentManager.beginTransaction()
             transaction.replace(R.id.fragmentLayout, MusicsFragment())
             transaction.commit()
