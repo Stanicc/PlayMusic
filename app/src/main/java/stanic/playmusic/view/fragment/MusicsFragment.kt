@@ -3,7 +3,6 @@ package stanic.playmusic.view.fragment
 import android.annotation.SuppressLint
 import android.media.MediaPlayer
 import android.os.Bundle
-import android.os.Handler
 import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
@@ -24,7 +23,6 @@ class MusicsFragment : Fragment() {
 
     private val musics = ArrayList<MusicModel>()
     private val player = MediaPlayer()
-    private val handler = Handler()
 
     lateinit var musicsList: RecyclerView
 
