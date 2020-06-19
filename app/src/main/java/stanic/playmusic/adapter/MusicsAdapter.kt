@@ -19,7 +19,6 @@ class MusicsAdapter(
         val image = view.music_image
 
         val title = view.music_title
-        val author = view.music_author
         val duration = view.music_duration
 
         val play = view.music_playButton
@@ -46,7 +45,6 @@ class MusicsAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val music = musics[position]
         holder.title.text = music.title
-        holder.author.text = music.author
         holder.duration.text = music.duration.toString()
 
         holder.play.setOnClickListener { buttonClickListener.onClick(holder.play, it, music, position, holder) }

@@ -1,23 +1,24 @@
 package stanic.playmusic.view.fragment
 
-import android.annotation.SuppressLint
+import android.media.MediaMetadataRetriever
 import android.media.MediaPlayer
 import android.os.Bundle
-import android.provider.MediaStore
+import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.activity_navigation.*
 import kotlinx.android.synthetic.main.fragment_musics.view.*
 import kotlinx.coroutines.*
 import stanic.playmusic.R
 import stanic.playmusic.adapter.MusicsAdapter
 import stanic.playmusic.model.MusicModel
+import java.io.File
 
 class MusicsFragment : Fragment() {
 
@@ -31,14 +32,13 @@ class MusicsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_musics, container, false).apply {
-            menuButtonMusics.setOnClickListener { drawer_layout.openDrawer(GravityCompat.START) }
+            loadMusics()
+            menuButtonMusics.setOnClickListener { findViewById<DrawerLayout>(R.id.drawer_layout).openDrawer(GravityCompat.START) }
 
             musicsList = music_recycler
 
-            loadMusics()
-
-            val layoutMusicsAdapter = LinearLayoutManager(context!!)
-            val adapter = MusicsAdapter(context!!, musics)
+            val layoutMusicsAdapter = LinearLayoutManager(requireContext())
+            val adapter = MusicsAdapter(requireContext(), musics)
 
             musicsList.layoutManager = layoutMusicsAdapter
             musicsList.adapter = adapter
@@ -85,22 +85,20 @@ class MusicsFragment : Fragment() {
         player.reset()
     }
 
-    @SuppressLint("InlinedApi")
     fun loadMusics() {
-        val uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
-        val selection = MediaStore.Audio.Media.IS_MUSIC
-        val cursor = context!!.contentResolver.query(uri, null, selection, null, null) ?: return
+        val directory = File(Environment.getExternalStorageDirectory(), "/PlayMusic")
+        if (!directory.exists()) directory.mkdirs()
 
-        while (cursor.moveToNext()) {
-            val title = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DISPLAY_NAME))
-            val author = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST))
-            val duration = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION))
-            val location = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI.path))
+        if (directory.listFiles() != null) directory.listFiles()!!.filter { it.name.contains(".mp3") || it.name.contains(".MP3") }.forEach {
+            val mediaMetadataRetriever = MediaMetadataRetriever()
+            mediaMetadataRetriever.setDataSource(it.absolutePath)
 
-            musics.add(MusicModel(title, author, duration.toLong(), location))
+            musics.add(MusicModel(
+                it.name.replace(".mp3", ""),
+                mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION).toLong(),
+                it.absolutePath)
+            )
         }
-
-        cursor.close()
     }
 
 }

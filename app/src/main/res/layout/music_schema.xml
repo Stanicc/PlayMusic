@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="80dp">
+    android:layout_height="60dp">
 
     <ImageView
         android:id="@+id/music_image"
@@ -20,34 +19,35 @@
         app:srcCompat="@mipmap/ic_launcher" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline2"
+        android:id="@+id/guidelineUp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.5" />
+        app:layout_constraintGuide_begin="41dp"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineDown"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="16dp"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/music_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="3dp"
         android:text="Nome da música"
-        android:textColor="#FFFFFF"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/guideline2"
+        android:maxLength="15"
+        android:textColor="#000000"
+        android:textSize="13sp"
+        app:layout_constraintBottom_toTopOf="@+id/guidelineUp"
         app:layout_constraintStart_toEndOf="@+id/music_image"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/music_author"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:text="Artista"
-        android:textSize="15sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/music_image"
-        app:layout_constraintTop_toBottomOf="@+id/guideline2" />
+        app:layout_constraintTop_toTopOf="@+id/guidelineDown"
+        app:layout_constraintVertical_bias="0.378" />
 
     <TextView
         android:id="@+id/music_duration"
