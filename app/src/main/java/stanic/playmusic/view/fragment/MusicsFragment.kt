@@ -1,29 +1,25 @@
 package stanic.playmusic.view.fragment
 
+import android.content.Intent
 import android.media.MediaMetadataRetriever
-import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
-import androidx.core.view.GravityCompat
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_musics.view.*
-import kotlinx.coroutines.*
 import stanic.playmusic.R
 import stanic.playmusic.adapter.MusicsAdapter
-import stanic.playmusic.model.MusicModel
+import stanic.playmusic.adapter.model.MusicModel
+import stanic.playmusic.controller.getMusicController
+import stanic.playmusic.view.MainActivity
 import java.io.File
 
 class MusicsFragment : Fragment() {
-
-    private val musics = ArrayList<MusicModel>()
-    private val player = MediaPlayer()
 
     lateinit var musicsList: RecyclerView
 
@@ -33,15 +29,20 @@ class MusicsFragment : Fragment() {
     ): View? {
         return inflater.inflate(R.layout.fragment_musics, container, false).apply {
             loadMusics()
-            menuButtonMusics.setOnClickListener { findViewById<DrawerLayout>(R.id.drawer_layout).openDrawer(GravityCompat.START) }
+
+            menuButtonMusics.setOnClickListener {
+                requireActivity().startActivity(Intent(requireActivity(), MainActivity::class.java))
+            }
 
             musicsList = music_recycler
 
             val layoutMusicsAdapter = LinearLayoutManager(requireContext())
-            val adapter = MusicsAdapter(requireContext(), musics)
+            val adapter = MusicsAdapter(requireContext(), getMusicController().musics)
 
             musicsList.layoutManager = layoutMusicsAdapter
             musicsList.adapter = adapter
+
+            val controller = getMusicController()
 
             adapter.setOnClickListener(object : MusicsAdapter.ButtonClickListener {
                 override fun onClick(
@@ -51,23 +52,14 @@ class MusicsFragment : Fragment() {
                     position: Int,
                     holder: MusicsAdapter.ViewHolder
                 ) {
-                    if (!player.isPlaying || button == holder.play) {
-                        val runnable = Runnable {
-                            player.reset()
-                            player.setDataSource(music.location)
-                            player.prepareAsync()
-                            player.setOnPreparedListener {
-                                it.start()
-                                GlobalScope.launch { thread() }
-                            }
-                        }
+                    if (!controller.player.isPlaying || button == holder.play) {
+                        controller.play(music)
 
-                        handler.postDelayed(runnable, 100)
                         holder.stop.visibility = View.VISIBLE
                         button.visibility = View.GONE
                     } else {
-                        player.stop()
-                        player.reset()
+                        controller.stop()
+
                         holder.stop.visibility = View.GONE
                         holder.play.visibility = View.VISIBLE
                     }
@@ -76,16 +68,7 @@ class MusicsFragment : Fragment() {
         }
     }
 
-    suspend fun thread() = coroutineScope {
-        while (player.isPlaying) {
-            delay(1000)
-            println(player.duration)
-        }
-
-        player.reset()
-    }
-
-    fun loadMusics() {
+    private fun loadMusics() {
         val directory = File(Environment.getExternalStorageDirectory(), "/PlayMusic")
         if (!directory.exists()) directory.mkdirs()
 
@@ -93,11 +76,15 @@ class MusicsFragment : Fragment() {
             val mediaMetadataRetriever = MediaMetadataRetriever()
             mediaMetadataRetriever.setDataSource(it.absolutePath)
 
+            val musics = ArrayList<MusicModel>()
+
             musics.add(MusicModel(
                 it.name.replace(".mp3", ""),
                 mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION).toLong(),
                 it.absolutePath)
             )
+
+            getMusicController().musics = musics
         }
     }
 

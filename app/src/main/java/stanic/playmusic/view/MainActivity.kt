@@ -16,6 +16,7 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_navigation.*
 import kotlinx.android.synthetic.main.fragment_main.*
 import stanic.playmusic.R
+import stanic.playmusic.controller.MusicController
 import stanic.playmusic.view.fragment.MusicsFragment
 
 class MainActivity : AppCompatActivity() {
@@ -44,6 +45,8 @@ class MainActivity : AppCompatActivity() {
         //Register the buttons events
         registerButtonsEvents()
         checkPermissions()
+
+        MusicController.INSTANCE = MusicController(this)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

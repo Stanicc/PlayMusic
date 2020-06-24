@@ -1,4 +1,4 @@
-package stanic.playmusic.model
+package stanic.playmusic.adapter.model
 
 class MusicModel(
     var title: String,
