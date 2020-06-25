@@ -1,17 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/mobile_navigation">
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@id/nav_home">
 
     <fragment
-        android:id="@+id/nav_main"
+        android:id="@+id/nav_home"
         android:name="stanic.playmusic.view.fragment.MainFragment"
         android:label="Main"
-        tools:layout="@layout/fragment_main" />
+        tools:layout="@layout/fragment_main" >
+        <action
+            android:id="@+id/action_nav_main_to_nav_musics"
+            app:destination="@id/nav_musics" />
+        <action
+            android:id="@+id/action_nav_main_to_downloadFragment2"
+            app:destination="@id/nav_download" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_musics"
         android:name="stanic.playmusic.view.fragment.MusicsFragment"
         android:label="Musics"
-        tools:layout="@layout/fragment_musics" />
+        tools:layout="@layout/fragment_musics" >
+        <action
+            android:id="@+id/action_nav_musics_to_nav_main"
+            app:destination="@id/nav_home" />
+        <action
+            android:id="@+id/action_nav_musics_to_nav_download"
+            app:destination="@id/nav_download" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_download"
+        android:name="stanic.playmusic.view.fragment.DownloadFragment"
+        android:label="fragment_download"
+        tools:layout="@layout/fragment_download" >
+        <action
+            android:id="@+id/action_downloadFragment_to_nav_main"
+            app:destination="@id/nav_home" />
+    </fragment>
+
 </navigation>

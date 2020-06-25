@@ -72,20 +72,20 @@ class MusicsFragment : Fragment() {
         val directory = File(Environment.getExternalStorageDirectory(), "/PlayMusic")
         if (!directory.exists()) directory.mkdirs()
 
+        val musics = ArrayList<MusicModel>()
+
         if (directory.listFiles() != null) directory.listFiles()!!.filter { it.name.contains(".mp3") || it.name.contains(".MP3") }.forEach {
             val mediaMetadataRetriever = MediaMetadataRetriever()
             mediaMetadataRetriever.setDataSource(it.absolutePath)
-
-            val musics = ArrayList<MusicModel>()
 
             musics.add(MusicModel(
                 it.name.replace(".mp3", ""),
                 mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION).toLong(),
                 it.absolutePath)
             )
-
-            getMusicController().musics = musics
         }
+
+        getMusicController().musics = musics
     }
 
 }

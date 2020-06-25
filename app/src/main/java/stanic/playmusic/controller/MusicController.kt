@@ -10,7 +10,8 @@ class MusicController(val activity: Activity) {
     val player = MediaPlayer()
     var musics = ArrayList<MusicModel>()
 
-    var queue = ArrayList<MusicModel>()
+    var stopped = false
+    var playing: MusicModel? = null
 
     fun play(music: MusicModel) {
         player.reset()
@@ -20,9 +21,13 @@ class MusicController(val activity: Activity) {
             it.start()
             GlobalScope.launch { thread() }
         }
+
+        playing = music
     }
 
     fun stop() {
+        stopped = true
+
         player.stop()
         player.reset()
     }
@@ -45,19 +50,22 @@ class MusicController(val activity: Activity) {
     }
 
     fun playNext(playing: MusicModel) {
-        val next = queue.getOrNull(queue.indexOf(playing) + 1) ?: queue[0]
+        val next = musics.getOrNull(musics.indexOf(playing) + 1) ?: musics[0]
 
         stop()
         play(next)
     }
 
-    private suspend fun thread() = coroutineScope {
-        while (player.isPlaying) {
-            delay(1000)
-            println(player.duration)
-        }
+    private suspend fun thread() = GlobalScope.launch {
+        withContext(Dispatchers.Main) {
+            while (player.isPlaying) {
+                delay(1000)
+                println(player.duration)
+            }
 
-        cancel()
+            if (!stopped && playing != null) playNext(playing!!)
+            else cancel()
+        }
     }
 
     companion object {

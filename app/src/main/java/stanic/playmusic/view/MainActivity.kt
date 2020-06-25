@@ -1,9 +1,11 @@
 package stanic.playmusic.view
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -11,15 +13,18 @@ import androidx.core.view.GravityCompat
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
+import com.yausername.youtubedl_android.YoutubeDL
 import kotlinx.android.synthetic.main.activity_navigation.*
+import kotlinx.android.synthetic.main.app_bar_navigation.*
 import kotlinx.android.synthetic.main.fragment_main.*
 import stanic.playmusic.R
 import stanic.playmusic.controller.MusicController
+import stanic.playmusic.view.fragment.DownloadFragment
 import stanic.playmusic.view.fragment.MusicsFragment
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
 
@@ -28,25 +33,25 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_navigation)
 
         //Floating button configuration
-        val fab: FloatingActionButton = findViewById(R.id.fab)
         fab.setOnClickListener { view ->
             Snackbar.make(view, "This is to open the playing music tab", Snackbar.LENGTH_LONG)
                 .setAction("Later...", null).show()
         }
 
         //NavigationDrawer configuration
-        val drawerLayout = drawer_layout
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.nav_home, R.id.nav_musics
-            ), drawerLayout
+                R.id.nav_home, R.id.nav_musics, R.id.nav_download
+            ), drawer_layout
         )
+        nav_view.setNavigationItemSelectedListener(this)
 
         //Register the buttons events
         registerButtonsEvents()
         checkPermissions()
 
         MusicController.INSTANCE = MusicController(this)
+        YoutubeDL.getInstance().init(applicationContext)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -57,6 +62,21 @@ class MainActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    }
+
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.nav_home -> startActivity(Intent(applicationContext, MainActivity::class.java))
+            R.id.nav_download -> {
+                val transaction = supportFragmentManager.beginTransaction()
+                transaction.replace(R.id.fragmentLayout, DownloadFragment())
+                transaction.commit()
+            }
+        }
+
+        drawer_layout.closeDrawer(GravityCompat.START)
+
+        return true
     }
 
     private fun registerButtonsEvents() {
