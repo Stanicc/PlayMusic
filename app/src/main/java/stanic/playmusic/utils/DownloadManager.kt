@@ -4,24 +4,17 @@ import android.app.Activity
 import android.os.Environment
 import android.view.View
 import android.widget.Toast
-import com.yausername.youtubedl_android.DownloadProgressCallback
 import com.yausername.youtubedl_android.YoutubeDL
 import com.yausername.youtubedl_android.YoutubeDLRequest
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_download.view.*
 import java.io.File
 
-class DownloadManager(val view: View, val activity: Activity) {
-
-    private val callback = DownloadProgressCallback { progress, _ ->
-        activity.runOnUiThread {
-            view.download_percent.text = "${progress}%"
-            view.progressBar_download.progress = progress.toInt()
-            view.progressBar_download_seek.progress = progress.toInt()
-        }
-    }
+class DownloadManager(
+    val view: View,
+    private val activity: Activity
+) {
 
     fun downloadMusic(link: String) {
         val directory = File(Environment.getExternalStorageDirectory(), "/PlayMusic")
@@ -29,9 +22,15 @@ class DownloadManager(val view: View, val activity: Activity) {
         request.addOption("-o", directory.absolutePath + "/%(title)s.mp3")
 
         Observable.fromCallable {
-            YoutubeDL.getInstance().execute(request, callback)
+            YoutubeDL.getInstance().execute(request) { progress, _ ->
+                activity.runOnUiThread {
+                    view.download_percent.text = "${progress}%"
+                    view.progressBar_download.progress = progress.toInt()
+                    view.progressBar_download_seek.progress = progress.toInt()
+                }
+            }
         }
-            .subscribeOn(Schedulers.newThread())
+            .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 {
