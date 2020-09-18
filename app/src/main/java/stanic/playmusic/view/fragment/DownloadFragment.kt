@@ -1,14 +1,14 @@
 package stanic.playmusic.view.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_download.view.*
 import stanic.playmusic.R
-import stanic.playmusic.utils.DownloadManager
+import stanic.playmusic.view.YoutubeViewerActivity
 
 class DownloadFragment : Fragment() {
 
@@ -17,6 +17,12 @@ class DownloadFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_download, container, false).apply {
+            youtube_download.setOnClickListener {
+                val intent = Intent(this@DownloadFragment.context, YoutubeViewerActivity::class.java)
+                startActivity(intent)
+            }
+
+            /**
             progressBar_download.visibility = View.GONE
             progressBar_download_seek.visibility = View.GONE
             download_percent.visibility = View.GONE
@@ -37,6 +43,7 @@ class DownloadFragment : Fragment() {
                     DownloadManager(this, requireActivity()).downloadMusic(link.text.toString())
                 }
             }
+            **/
         }
     }
 

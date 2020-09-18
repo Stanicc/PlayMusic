@@ -69,7 +69,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_home -> startActivity(Intent(applicationContext, MainActivity::class.java))
             R.id.nav_download -> {
                 val transaction = supportFragmentManager.beginTransaction()
-                transaction.replace(R.id.fragmentLayout, DownloadFragment())
+                transaction.add(R.id.fragmentLayout, DownloadFragment())
                 transaction.commit()
             }
         }
@@ -84,7 +84,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         musicsButton.setOnClickListener {
             val transaction = supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.fragmentLayout, MusicsFragment())
+            transaction.add(R.id.fragmentLayout, MusicsFragment())
             transaction.commit()
         }
     }
@@ -114,4 +114,5 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
         }
     }
+
 }
