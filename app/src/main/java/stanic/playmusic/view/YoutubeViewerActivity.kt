@@ -10,7 +10,6 @@ import stanic.playmusic.R
 
 class YoutubeViewerActivity : YouTubeBaseActivity(), YouTubePlayer.OnInitializedListener {
 
-    val youtubeAPIKey = "key"
     lateinit var youtubePlayerView: YouTubePlayerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,16 +34,5 @@ class YoutubeViewerActivity : YouTubeBaseActivity(), YouTubePlayer.OnInitialized
     ) {
         Toast.makeText(this, "Deu ruimkkkkkk", Toast.LENGTH_SHORT).show()
     }
-
-    /*
-        <com.google.android.youtube.player.YouTubePlayerView
-        android:id="@+id/youtubePlayer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-     */
 
 }

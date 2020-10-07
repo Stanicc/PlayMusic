@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_download.view.*
 import stanic.playmusic.R
-import stanic.playmusic.view.YoutubeViewerActivity
+import stanic.playmusic.view.YoutubeDownloaderActivity
 
 class DownloadFragment : Fragment() {
 
@@ -18,7 +18,7 @@ class DownloadFragment : Fragment() {
     ): View? {
         return inflater.inflate(R.layout.fragment_download, container, false).apply {
             youtube_download.setOnClickListener {
-                val intent = Intent(this@DownloadFragment.context, YoutubeViewerActivity::class.java)
+                val intent = Intent(this@DownloadFragment.context, YoutubeDownloaderActivity::class.java)
                 startActivity(intent)
             }
 

@@ -15,6 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".view.YoutubeViewerActivity"></activity>
+        <activity android:name=".view.YoutubeDownloaderActivity" />
         <activity
             android:name=".view.MainActivity"
             android:label="PlayMusic"
