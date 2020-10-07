@@ -19,6 +19,8 @@ import com.yausername.youtubedl_android.YoutubeDL
 import kotlinx.android.synthetic.main.activity_navigation.*
 import kotlinx.android.synthetic.main.app_bar_navigation.*
 import kotlinx.android.synthetic.main.fragment_main.*
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import stanic.playmusic.R
 import stanic.playmusic.controller.MusicController
 import stanic.playmusic.view.fragment.DownloadFragment
@@ -52,6 +54,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         MusicController.INSTANCE = MusicController(this)
         YoutubeDL.getInstance().init(applicationContext)
+
+        retrofit = Retrofit.Builder()
+            .baseUrl("https://www.googleapis.com/youtube/v3/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -113,6 +120,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     arrayOf(Manifest.permission.INTERNET),1)
             }
         }
+    }
+
+    companion object {
+        lateinit var retrofit: Retrofit
     }
 
 }

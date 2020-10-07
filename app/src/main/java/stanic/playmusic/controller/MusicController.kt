@@ -18,6 +18,10 @@ class MusicController(val activity: Activity) {
         player.setDataSource(music.location)
         player.prepareAsync()
         player.setOnPreparedListener {
+            it.setOnCompletionListener {
+                if (playing != null && !stopped) playNext(playing!!)
+            }
+
             it.start()
             GlobalScope.launch { thread() }
         }
@@ -63,8 +67,7 @@ class MusicController(val activity: Activity) {
                 println(player.duration)
             }
 
-            if (!stopped && playing != null) playNext(playing!!)
-            else cancel()
+            cancel()
         }
     }
 
