@@ -7,7 +7,9 @@
 ## 📺 Demo:
 The application is still under development, changes will happen.
 
-<img src="https://i.imgur.com/BrF6MW1.png"><img src="https://i.imgur.com/oTX5O92.png"><img src="https://i.imgur.com/BqvBk0V.png"><img src="https://i.imgur.com/gYekBfK.png"><img src="https://i.imgur.com/BJgtdjv.png"><img src="https://i.imgur.com/dtUeAuc.png"><img src="https://i.imgur.com/UbDGpqb.png"><img src="https://i.imgur.com/WjunyvP.png">
+<p float="left">
+<img src="https://i.imgur.com/BrF6MW1.png" width="100"><img src="https://i.imgur.com/oTX5O92.png" width="100"><img src="https://i.imgur.com/BqvBk0V.png" width="100"><img src="https://i.imgur.com/gYekBfK.png" width="100"><img src="https://i.imgur.com/BJgtdjv.png" width="100"><img src="https://i.imgur.com/dtUeAuc.png" width="100"><img src="https://i.imgur.com/UbDGpqb.png" width="100"><img src="https://i.imgur.com/WjunyvP.png" width="100">
+</p>
 
 # 💻 Features:
 - **Play**:
