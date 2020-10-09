@@ -13,6 +13,7 @@ interface YoutubeService {
         @Query("q") q: String?,
         @Query("order") order: String,
         @Query("key") key: String?,
+        @Query("type") type: String = "video",
         @Query("safeSearch") safeSearch: String = "none",
         @Query("videoType") videoType: String = "any",
         @Query("videoCaption") videoCaption: String = "any",
