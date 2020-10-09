@@ -4,12 +4,10 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.result_schema.view.*
 import stanic.playmusic.R
-import stanic.playmusic.adapter.model.MusicModel
 import stanic.playmusic.service.model.Item
 
 class ResultAdapter(
@@ -25,7 +23,7 @@ class ResultAdapter(
     lateinit var buttonClickListener: ButtonClickListener
 
     interface ButtonClickListener {
-        fun onClick(button: ImageButton, view: View, music: MusicModel, position: Int, holder: MusicsAdapter.ViewHolder)
+        fun onClick(view: View, item: Item, position: Int, holder: ResultAdapter.ViewHolder)
     }
 
     fun setOnClickListener(listener: ButtonClickListener) {
@@ -44,6 +42,9 @@ class ResultAdapter(
 
         holder.title.text = item.snippet.title
         Picasso.get().load(item.snippet.thumbnails.medium.url).into(holder.thumbnail)
+
+        holder.thumbnail.setOnClickListener { buttonClickListener.onClick(it, item, position, holder) }
+        holder.title.setOnClickListener { buttonClickListener.onClick(it, item, position, holder) }
     }
 
 }

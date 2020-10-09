@@ -21,29 +21,6 @@ class DownloadFragment : Fragment() {
                 val intent = Intent(this@DownloadFragment.context, YoutubeDownloaderActivity::class.java)
                 startActivity(intent)
             }
-
-            /**
-            progressBar_download.visibility = View.GONE
-            progressBar_download_seek.visibility = View.GONE
-            download_percent.visibility = View.GONE
-
-            download_button.setOnClickListener {
-                val link = download_link
-
-                if (link.text.isEmpty() || !link.text.toString().startsWith("http")) Toast.makeText(requireContext(), "Você deve colocar um link válido", Toast.LENGTH_SHORT).show()
-                else {
-                    download_text.text = "Download em andamento"
-                    download_button.visibility = View.GONE
-                    download_link.visibility = View.GONE
-
-                    progressBar_download.visibility = View.VISIBLE
-                    progressBar_download_seek.visibility = View.VISIBLE
-                    download_percent.visibility = View.VISIBLE
-
-                    DownloadManager(this, requireActivity()).downloadMusic(link.text.toString())
-                }
-            }
-            **/
         }
     }
 
