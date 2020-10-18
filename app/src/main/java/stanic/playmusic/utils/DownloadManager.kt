@@ -63,7 +63,4 @@ class DownloadManager(
             }
     }
 
-    fun downloadVideo() {
-    }
-
 }
