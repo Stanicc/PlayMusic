@@ -27,7 +27,7 @@ class YoutubeViewerActivity : YouTubeBaseActivity(), YouTubePlayer.OnInitialized
         youtubePlayerView = youtubePlayer
         youtubePlayerView.initialize(YoutubeConfig.apiKey, this)
 
-        viewer_title.text = item.snippet.title
+        viewer_title.text = item.snippet.title.replace("&quot;", "").replace("&amp;", "")
 
         download_button.setOnClickListener {
             val link = "https://youtu.be/${item.id.videoId}"
