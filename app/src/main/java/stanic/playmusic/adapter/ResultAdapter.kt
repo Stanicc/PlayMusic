@@ -40,7 +40,7 @@ class ResultAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
 
-        holder.title.text = item.snippet.title
+        holder.title.text = item.snippet.title.replace("&quot;", "").replace("&amp;", "")
         Picasso.get().load(item.snippet.thumbnails.medium.url).into(holder.thumbnail)
 
         holder.thumbnail.setOnClickListener { buttonClickListener.onClick(it, item, position, holder) }
