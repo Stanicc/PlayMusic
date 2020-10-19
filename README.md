@@ -21,7 +21,3 @@ The application is still under development, changes will happen.
 # 🔨 Todo
 
 ...
-
-# Download
-
-The download is unavailable in this moment
