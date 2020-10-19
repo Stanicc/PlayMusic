@@ -1,6 +1,7 @@
 package stanic.playmusic.view
 
 import android.os.Bundle
+import android.os.Environment
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.Toast
@@ -46,7 +47,9 @@ class YoutubeViewerActivity : YouTubeBaseActivity(), YouTubePlayer.OnInitialized
             progressBar_download_seek.startAnimation(animation)
             download_percent.startAnimation(animation)
 
-            DownloadManager(window.decorView.rootView, this).downloadMusic(link)
+            DownloadManager(window.decorView.rootView, this).downloadMusic(getExternalFilesDir(
+                Environment.DIRECTORY_DOWNLOADS
+            )!!.absolutePath, link)
         }
     }
 

@@ -69,7 +69,7 @@ class MusicsFragment : Fragment() {
     }
 
     private fun loadMusics() {
-        val directory = File(Environment.getExternalStorageDirectory(), "/PlayMusic")
+        val directory = File(requireContext().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)!!.absolutePath, "/PlayMusic")
         if (!directory.exists()) directory.mkdirs()
 
         val musics = ArrayList<MusicModel>()

@@ -1,7 +1,6 @@
 package stanic.playmusic.utils
 
 import android.app.Activity
-import android.os.Environment
 import android.view.View
 import android.widget.Toast
 import com.yausername.youtubedl_android.YoutubeDL
@@ -17,8 +16,8 @@ class DownloadManager(
     private val activity: Activity
 ) {
 
-    fun downloadMusic(link: String) {
-        val directory = File(Environment.getExternalStorageDirectory(), "/PlayMusic")
+    fun downloadMusic(path: String, link: String) {
+        val directory = File(path, "/PlayMusic")
         val request = YoutubeDLRequest(link)
         request.addOption("-o", directory.absolutePath + "/%(title)s.mp3")
 
@@ -60,6 +59,8 @@ class DownloadManager(
 
                 Toast.makeText(view.context, "Ocorreu um erro ao fazer o download", Toast.LENGTH_SHORT)
                     .show()
+                println(it.message)
+                it.printStackTrace()
             }
     }
 
