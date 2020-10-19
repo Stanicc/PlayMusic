@@ -7,6 +7,48 @@
     android:background="#1B1533"
     tools:context=".view.YoutubeDownloaderActivity">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/searchDownloader_layout"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="#211E33"
+        android:elevation="20dp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <EditText
+            android:id="@+id/searchDownloader_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="80dp"
+            android:backgroundTint="#34495E"
+            android:ems="10"
+            android:hint="Pesquisar"
+            android:inputType="textPersonName"
+            android:textColor="#6545A0"
+            android:textColorHint="#6545A0"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/searchDownloader_Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="50dp"
+            android:background="#211E33"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/editText"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/search" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <TextView
         android:id="@+id/searchYoutube_text"
         android:layout_width="wrap_content"
@@ -48,15 +90,32 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/searchYoutube_content" />
 
+    <ProgressBar
+        android:id="@+id/searchYoutube_progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_marginBottom="100dp"
+        android:max="100"
+        android:progress="0"
+        android:progressBackgroundTint="#6545A0"
+        android:progressTint="#6545A0"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/searchYoutube_content" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/searchYoutube_resultRecycler"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="490dp"
         android:layout_margin="20dp"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/searchDownloader_layout"
+        app:layout_constraintVertical_bias="0.797" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

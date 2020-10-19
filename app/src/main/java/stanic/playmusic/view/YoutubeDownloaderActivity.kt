@@ -28,48 +28,62 @@ class YoutubeDownloaderActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_youtube_downloader)
 
-        searchYoutube_button.setOnClickListener {
-            val search = searchYoutube_content
+        searchYoutube_button.setOnClickListener { registerButtonListeners(false) }
+        searchDownloader_Button.setOnClickListener { registerButtonListeners(true) }
+    }
 
-            if (search.text.isEmpty()) Toast.makeText(this, "Você deve colocar algo para pesquisar!", Toast.LENGTH_SHORT).show()
-            else {
-                val youtubeService = retrofit.create(YoutubeService::class.java)
+    private fun registerButtonListeners(downloader: Boolean) {
+        val search = if (!downloader) searchYoutube_content else searchDownloader_content
 
-                youtubeService.getResult("snippet", search.text.toString(),  "relevance", YoutubeConfig.apiKey).enqueue(object : Callback<Result> {
-                    override fun onResponse(call: Call<Result>, response: Response<Result>) {
-                        searchYoutube_resultRecycler.visibility = View.VISIBLE
-                        searchYoutube_button.visibility = View.GONE
-                        searchYoutube_content.visibility = View.GONE
-                        searchYoutube_text.visibility = View.GONE
+        if (search.text.isEmpty()) Toast.makeText(this, "Você deve colocar algo para pesquisar!", Toast.LENGTH_SHORT).show()
+        else {
+            val youtubeService = retrofit.create(YoutubeService::class.java)
 
-                        resultList = searchYoutube_resultRecycler
-
-                        val layoutResultManager = LinearLayoutManager(this@YoutubeDownloaderActivity)
-                        val adapter = ResultAdapter(this@YoutubeDownloaderActivity, response.body()!!.items)
-
-                        resultList.layoutManager = layoutResultManager
-                        resultList.adapter = AlphaInAnimationAdapter(adapter)
-
-                        adapter.setOnClickListener(object : ResultAdapter.ButtonClickListener {
-                            override fun onClick(
-                                view: View,
-                                item: Item,
-                                position: Int,
-                                holder: ResultAdapter.ViewHolder
-                            ) {
-                                val intent = Intent(this@YoutubeDownloaderActivity, YoutubeViewerActivity::class.java)
-                                intent.putExtra("item", item)
-
-                                startActivity(intent)
-                            }
-                        })
-                    }
-
-                    override fun onFailure(call: Call<Result>, t: Throwable) {
-                        t.printStackTrace()
-                    }
-                })
+            if (downloader) {
+                resultList.Recycler().clear()
+                searchYoutube_resultRecycler.visibility = View.GONE
             }
+
+            searchYoutube_button.visibility = View.GONE
+            searchYoutube_progressBar.visibility = View.VISIBLE
+
+            youtubeService.getResult("snippet", search.text.toString(),  "relevance", YoutubeConfig.apiKey).enqueue(object : Callback<Result> {
+                override fun onResponse(call: Call<Result>, response: Response<Result>) {
+                    searchYoutube_resultRecycler.visibility = View.VISIBLE
+                    searchDownloader_layout.visibility = View.VISIBLE
+
+                    searchYoutube_content.visibility = View.GONE
+                    searchYoutube_button.visibility = View.GONE
+                    searchYoutube_text.visibility = View.GONE
+                    searchYoutube_progressBar.visibility = View.GONE
+
+                    resultList = searchYoutube_resultRecycler
+
+                    val layoutResultManager = LinearLayoutManager(this@YoutubeDownloaderActivity)
+                    val adapter = ResultAdapter(this@YoutubeDownloaderActivity, response.body()!!.items)
+
+                    resultList.layoutManager = layoutResultManager
+                    resultList.adapter = AlphaInAnimationAdapter(adapter)
+
+                    adapter.setOnClickListener(object : ResultAdapter.ButtonClickListener {
+                        override fun onClick(
+                            view: View,
+                            item: Item,
+                            position: Int,
+                            holder: ResultAdapter.ViewHolder
+                        ) {
+                            val intent = Intent(this@YoutubeDownloaderActivity, YoutubeViewerActivity::class.java)
+                            intent.putExtra("item", item)
+
+                            startActivity(intent)
+                        }
+                    })
+                }
+
+                override fun onFailure(call: Call<Result>, t: Throwable) {
+                    t.printStackTrace()
+                }
+            })
         }
     }
 
