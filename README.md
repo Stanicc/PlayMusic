@@ -20,4 +20,6 @@ The application is still under development, changes will happen.
 
 # 🔨 Todo
 
-...
+✅ - Youtube search and downloder
+🔶 - Music list and playback
+⭕ - Playlists
