@@ -12,6 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="300dp"
+        android:gravity="center_vertical|center_horizontal"
         android:text="Escolha uma opção"
         android:textColor="@color/bootstrap_gray_light"
         android:textSize="30sp"

@@ -32,6 +32,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="310dp"
+        android:gravity="center_vertical|center_horizontal"
         android:text="Viewer title"
         android:textColor="#FFFFFF"
         android:textSize="17sp"
