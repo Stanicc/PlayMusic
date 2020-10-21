@@ -3,6 +3,7 @@ package stanic.playmusic.controller
 import android.app.Activity
 import android.media.MediaPlayer
 import kotlinx.coroutines.*
+import stanic.playmusic.adapter.MusicsAdapter
 import stanic.playmusic.adapter.model.MusicModel
 
 class MusicController(val activity: Activity) {
@@ -10,8 +11,8 @@ class MusicController(val activity: Activity) {
     val player = MediaPlayer()
     var musics = ArrayList<MusicModel>()
 
-    var stopped = false
-    var playing: MusicModel? = null
+    var stopped = true
+    var playing: Pair<MusicsAdapter.ViewHolder, MusicModel>? = null
 
     fun play(music: MusicModel) {
         stopped = false
@@ -21,18 +22,16 @@ class MusicController(val activity: Activity) {
         player.prepareAsync()
         player.setOnPreparedListener {
             it.setOnCompletionListener {
-                if (playing != null && !stopped) playNext(playing!!)
+                if (playing != null && !stopped) playNext(playing!!.second)
             }
 
-            it.start()
             GlobalScope.launch { thread() }
         }
-
-        playing = music
     }
 
     fun stop() {
         stopped = true
+        playing = null
 
         player.stop()
         player.reset()

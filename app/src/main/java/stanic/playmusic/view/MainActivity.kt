@@ -57,7 +57,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         registerButtonsEvents()
         checkPermissions()
 
-        MusicController.INSTANCE = MusicController(this)
+        try {
+            getMusicController()
+        } catch (e: Exception) {
+            MusicController.INSTANCE = MusicController(this)
+        }
         YoutubeDL.getInstance().init(applicationContext)
         loadMusics()
 

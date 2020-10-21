@@ -49,8 +49,13 @@ class MusicsFragment : Fragment() {
                         position: Int,
                         holder: MusicsAdapter.ViewHolder
                     ) {
-                        if (!controller.player.isPlaying || button == holder.play) {
+                        if (button == holder.play) {
+                            if (controller.playing != null) {
+                                controller.playing!!.first.play.visibility = View.VISIBLE
+                                controller.playing!!.first.stop.visibility = View.GONE
+                            }
                             controller.play(music)
+                            controller.playing = holder to music
 
                             holder.stop.visibility = View.VISIBLE
                             button.visibility = View.GONE

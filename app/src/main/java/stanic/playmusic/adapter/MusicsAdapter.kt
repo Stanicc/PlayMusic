@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.music_schema.view.*
 import stanic.playmusic.R
 import stanic.playmusic.adapter.model.MusicModel
+import stanic.playmusic.controller.getMusicController
 
 class MusicsAdapter(
     var context: Context,
@@ -60,7 +61,10 @@ class MusicsAdapter(
         holder.play.setOnClickListener { buttonClickListener.onClick(holder.play, it, music, position, holder) }
         holder.stop.setOnClickListener { buttonClickListener.onClick(holder.stop, it, music, position, holder) }
 
-        holder.stop.visibility = View.GONE
+        if (getMusicController().playing != null && getMusicController().playing!!.second.location == music.location) {
+            holder.stop.visibility = View.VISIBLE
+            holder.play.visibility = View.GONE
+        } else holder.stop.visibility = View.GONE
     }
 
 }
