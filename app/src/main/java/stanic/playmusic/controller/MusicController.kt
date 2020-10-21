@@ -26,6 +26,7 @@ class MusicController(val activity: Activity) {
             }
 
             GlobalScope.launch { thread() }
+            it.start()
         }
     }
 
