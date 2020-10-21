@@ -3,7 +3,9 @@ package stanic.playmusic.view
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.media.MediaMetadataRetriever
 import android.os.Bundle
+import android.os.Environment
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
@@ -22,9 +24,12 @@ import kotlinx.android.synthetic.main.fragment_main.*
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import stanic.playmusic.R
+import stanic.playmusic.adapter.model.MusicModel
 import stanic.playmusic.controller.MusicController
+import stanic.playmusic.controller.getMusicController
 import stanic.playmusic.view.fragment.DownloadFragment
 import stanic.playmusic.view.fragment.MusicsFragment
+import java.io.File
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -54,6 +59,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         MusicController.INSTANCE = MusicController(this)
         YoutubeDL.getInstance().init(applicationContext)
+        loadMusics()
 
         retrofit = Retrofit.Builder()
             .baseUrl("https://www.googleapis.com/youtube/v3/")
@@ -84,6 +90,27 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawer_layout.closeDrawer(GravityCompat.START)
 
         return true
+    }
+
+    private fun loadMusics() {
+        val directory = File(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)!!.absolutePath, "/PlayMusic")
+        if (!directory.exists()) directory.mkdirs()
+
+        val musics = ArrayList<MusicModel>()
+
+        if (directory.listFiles() != null) directory.listFiles()!!.filter { it.name.contains(".mp3") || it.name.contains(".MP3") }.forEach {
+            val mediaMetadataRetriever = MediaMetadataRetriever()
+            mediaMetadataRetriever.setDataSource(it.absolutePath)
+
+            musics.add(
+                MusicModel(
+                it.name.replace(".mp3", ""),
+                mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION).toLong(),
+                it.absolutePath)
+            )
+        }
+
+        getMusicController().musics = musics
     }
 
     private fun registerButtonsEvents() {

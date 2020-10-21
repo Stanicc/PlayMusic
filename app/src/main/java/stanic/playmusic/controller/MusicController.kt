@@ -14,6 +14,8 @@ class MusicController(val activity: Activity) {
     var playing: MusicModel? = null
 
     fun play(music: MusicModel) {
+        stopped = false
+
         player.reset()
         player.setDataSource(music.location)
         player.prepareAsync()

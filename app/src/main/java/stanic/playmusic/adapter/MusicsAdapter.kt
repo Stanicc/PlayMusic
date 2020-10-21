@@ -5,7 +5,6 @@ import android.media.MediaMetadataRetriever
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
 import android.widget.ImageButton
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.music_schema.view.*
@@ -62,13 +61,6 @@ class MusicsAdapter(
         holder.stop.setOnClickListener { buttonClickListener.onClick(holder.stop, it, music, position, holder) }
 
         holder.stop.visibility = View.GONE
-
-        val animation = AnimationUtils.loadAnimation(context, R.anim.fade_in)
-        holder.background.startAnimation(animation)
-        holder.image.startAnimation(animation)
-        holder.title.startAnimation(animation)
-        holder.duration.startAnimation(animation)
-        holder.play.startAnimation(animation)
     }
 
 }
