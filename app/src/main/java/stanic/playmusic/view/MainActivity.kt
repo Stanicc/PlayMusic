@@ -8,6 +8,8 @@ import android.os.Bundle
 import android.os.Environment
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -44,6 +46,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             Snackbar.make(view, "This is to open the playing music tab", Snackbar.LENGTH_LONG)
                 .setAction("Later...", null).show()
         }
+        fab.visibility = View.GONE
 
         //NavigationDrawer configuration
         appBarConfiguration = AppBarConfiguration(
@@ -121,9 +124,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         menuButton.setOnClickListener { drawer_layout.openDrawer(GravityCompat.START) }
 
         musicsButton.setOnClickListener {
-            val transaction = supportFragmentManager.beginTransaction()
-            transaction.add(R.id.fragmentLayout, MusicsFragment())
-            transaction.commit()
+            if (getMusicController().musics.isEmpty()) Toast.makeText(
+                this,
+                "Você não tem músicas para listar",
+                Toast.LENGTH_SHORT
+            ).show()
+            else {
+                val transaction = supportFragmentManager.beginTransaction()
+                transaction.add(R.id.fragmentLayout, MusicsFragment())
+                transaction.commit()
+            }
         }
     }
 

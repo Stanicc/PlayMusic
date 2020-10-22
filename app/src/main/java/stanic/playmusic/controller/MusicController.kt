@@ -1,10 +1,15 @@
 package stanic.playmusic.controller
 
 import android.app.Activity
+import android.graphics.Color
 import android.media.MediaPlayer
-import kotlinx.coroutines.*
-import stanic.playmusic.adapter.MusicsAdapter
+import android.view.View
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import stanic.playmusic.adapter.model.MusicModel
+import kotlin.coroutines.suspendCoroutine
 
 class MusicController(val activity: Activity) {
 
@@ -12,27 +17,29 @@ class MusicController(val activity: Activity) {
     var musics = ArrayList<MusicModel>()
 
     var stopped = true
-    var playing: Pair<MusicsAdapter.ViewHolder, MusicModel>? = null
+    var playing: MusicModel? = null
 
-    fun play(music: MusicModel) {
+    suspend fun <T> play(music: MusicModel) = suspendCoroutine<T> { continuation ->
+        stop()
         stopped = false
+        playing = music
 
-        player.reset()
         player.setDataSource(music.location)
         player.prepareAsync()
         player.setOnPreparedListener {
             it.setOnCompletionListener {
-                if (playing != null && !stopped) playNext(playing!!.second)
+                if (playing != null && !stopped) playNext(playing!!)
             }
 
-            GlobalScope.launch { thread() }
+            thread()
             it.start()
+
+            continuation.resumeWith(Result.success(music as T))
         }
     }
 
     fun stop() {
         stopped = true
-        playing = null
 
         player.stop()
         player.reset()
@@ -55,22 +62,25 @@ class MusicController(val activity: Activity) {
 
     }
 
-    fun playNext(playing: MusicModel) {
-        val next = musics.getOrNull(musics.indexOf(playing) + 1) ?: musics[0]
+    fun playNext(playingNow: MusicModel) {
+        val next = musics.getOrNull(musics.indexOf(playingNow) + 1) ?: musics[0]
+
+        playing!!.holder!!.play.visibility = View.VISIBLE
+        playing!!.holder!!.stop.visibility = View.GONE
+        playing!!.holder!!.title.setTextColor(Color.parseColor("#FFFFFF"))
+
+        playingNow.holder?.stop?.visibility = View.VISIBLE
+        playingNow.holder?.title?.setTextColor(Color.parseColor("#00FF0D"))
+        playingNow.holder?.play?.visibility = View.GONE
 
         stop()
-        play(next)
+        GlobalScope.launch { play(next) }
     }
 
-    private suspend fun thread() = GlobalScope.launch {
-        withContext(Dispatchers.Main) {
-            while (player.isPlaying) {
-                delay(1000)
-                println(player.duration)
-            }
+    private fun thread() = GlobalScope.launch {
+        while (player.isPlaying) delay(1000)
 
-            cancel()
-        }
+        cancel()
     }
 
     companion object {

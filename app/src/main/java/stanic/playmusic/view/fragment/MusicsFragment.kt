@@ -1,6 +1,7 @@
 package stanic.playmusic.view.fragment
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView
 import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter
 import jp.wasabeef.recyclerview.animators.FadeInDownAnimator
 import kotlinx.android.synthetic.main.fragment_musics.view.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import stanic.playmusic.R
 import stanic.playmusic.adapter.MusicsAdapter
 import stanic.playmusic.adapter.model.MusicModel
@@ -51,19 +54,28 @@ class MusicsFragment : Fragment() {
                     ) {
                         if (button == holder.play) {
                             if (controller.playing != null) {
-                                controller.playing!!.first.play.visibility = View.VISIBLE
-                                controller.playing!!.first.stop.visibility = View.GONE
-                            }
-                            controller.play(music)
-                            controller.playing = holder to music
+                                controller.playing!!.holder!!.play.visibility = View.VISIBLE
+                                controller.playing!!.holder!!.stop.visibility = View.GONE
 
-                            holder.stop.visibility = View.VISIBLE
-                            button.visibility = View.GONE
+                                controller.playing!!.holder!!.title.setTextColor(Color.parseColor("#FFFFFF"))
+                            }
+                            GlobalScope.launch {
+                                controller.play<MusicModel>(music).runCatching {
+                                    requireActivity().runOnUiThread {
+                                        holder.stop.visibility = View.VISIBLE
+                                        holder.title.setTextColor(Color.parseColor("#00FF0D"))
+                                        button.visibility = View.GONE
+                                    }
+                                }
+                            }
                         } else {
                             controller.stop()
 
                             holder.stop.visibility = View.GONE
                             holder.play.visibility = View.VISIBLE
+                            holder.title.setTextColor(Color.parseColor("#FFFFFF"))
+
+                            controller.playing = null
                         }
                     }
                 })
