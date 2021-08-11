@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 import stanic.playmusic.adapter.model.MusicModel
 import kotlin.coroutines.suspendCoroutine
 
-class MusicController(val activity: Activity) {
+class MusicController(val activity: Activity? = null) {
 
     val player = MediaPlayer()
     var musics = ArrayList<MusicModel>()

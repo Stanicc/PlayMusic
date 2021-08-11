@@ -1,4 +1,4 @@
-package stanic.playmusic.view
+package stanic.playmusic.view.download.downloader
 
 import android.content.Intent
 import android.os.Bundle
@@ -15,10 +15,11 @@ import retrofit2.Response
 import stanic.playmusic.R
 import stanic.playmusic.adapter.ResultAdapter
 import stanic.playmusic.service.YoutubeService
+import stanic.playmusic.service.config.YoutubeConfig
 import stanic.playmusic.service.model.Item
 import stanic.playmusic.service.model.Result
-import stanic.playmusic.utils.YoutubeConfig
 import stanic.playmusic.view.MainActivity.Companion.retrofit
+import stanic.playmusic.view.download.viewer.YoutubeViewerActivity
 
 class YoutubeDownloaderActivity : AppCompatActivity() {
 

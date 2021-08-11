@@ -1,4 +1,4 @@
-package stanic.playmusic.view.fragment
+package stanic.playmusic.view.main
 
 import android.os.Bundle
 import android.view.LayoutInflater

@@ -1,4 +1,4 @@
-package stanic.playmusic.view.fragment
+package stanic.playmusic.view.library
 
 import android.content.Intent
 import android.graphics.Color

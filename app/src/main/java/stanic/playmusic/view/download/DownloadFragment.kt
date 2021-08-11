@@ -1,4 +1,4 @@
-package stanic.playmusic.view.fragment
+package stanic.playmusic.view.download
 
 import android.content.Intent
 import android.os.Bundle
@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_download.view.*
 import stanic.playmusic.R
-import stanic.playmusic.view.YoutubeDownloaderActivity
+import stanic.playmusic.view.download.downloader.YoutubeDownloaderActivity
 
 class DownloadFragment : Fragment() {
 

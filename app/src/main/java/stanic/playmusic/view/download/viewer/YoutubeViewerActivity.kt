@@ -1,4 +1,4 @@
-package stanic.playmusic.view
+package stanic.playmusic.view.download.viewer
 
 import android.os.Bundle
 import android.os.Environment
@@ -11,9 +11,9 @@ import com.google.android.youtube.player.YouTubePlayer
 import com.google.android.youtube.player.YouTubePlayerView
 import kotlinx.android.synthetic.main.activity_youtube_viewer.*
 import stanic.playmusic.R
+import stanic.playmusic.service.config.YoutubeConfig
+import stanic.playmusic.service.download.YoutubeDownloadService
 import stanic.playmusic.service.model.Item
-import stanic.playmusic.utils.DownloadManager
-import stanic.playmusic.utils.YoutubeConfig
 
 class YoutubeViewerActivity : YouTubeBaseActivity(), YouTubePlayer.OnInitializedListener {
 
@@ -47,7 +47,7 @@ class YoutubeViewerActivity : YouTubeBaseActivity(), YouTubePlayer.OnInitialized
             progressBar_download_seek.startAnimation(animation)
             download_percent.startAnimation(animation)
 
-            DownloadManager(window.decorView.rootView, this).downloadMusic(getExternalFilesDir(
+            YoutubeDownloadService(window.decorView.rootView, this).downloadMusic(getExternalFilesDir(
                 Environment.DIRECTORY_DOWNLOADS
             )!!.absolutePath, link)
         }

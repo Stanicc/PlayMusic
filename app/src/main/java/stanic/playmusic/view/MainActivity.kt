@@ -3,9 +3,7 @@ package stanic.playmusic.view
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.media.MediaMetadataRetriever
 import android.os.Bundle
-import android.os.Environment
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -17,21 +15,20 @@ import androidx.core.view.GravityCompat
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
-import com.yausername.youtubedl_android.YoutubeDL
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_navigation.*
 import kotlinx.android.synthetic.main.app_bar_navigation.*
 import kotlinx.android.synthetic.main.fragment_main.*
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import stanic.playmusic.R
-import stanic.playmusic.adapter.model.MusicModel
-import stanic.playmusic.controller.MusicController
 import stanic.playmusic.controller.getMusicController
-import stanic.playmusic.view.fragment.DownloadFragment
-import stanic.playmusic.view.fragment.MusicsFragment
-import java.io.File
+import stanic.playmusic.view.download.DownloadFragment
+import stanic.playmusic.view.library.MusicsFragment
+import stanic.playmusic.view.main.MainFragment
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -41,14 +38,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_navigation)
 
-        //Floating button configuration
         fab.setOnClickListener { view ->
             Snackbar.make(view, "This is to open the playing music tab", Snackbar.LENGTH_LONG)
                 .setAction("Later...", null).show()
         }
         fab.visibility = View.GONE
 
-        //NavigationDrawer configuration
         appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.nav_home, R.id.nav_musics, R.id.nav_download
@@ -56,17 +51,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         )
         nav_view.setNavigationItemSelectedListener(this)
 
-        //Register the buttons events
         registerButtonsEvents()
         checkPermissions()
-
-        try {
-            getMusicController()
-        } catch (e: Exception) {
-            MusicController.INSTANCE = MusicController(this)
-        }
-        YoutubeDL.getInstance().init(applicationContext)
-        loadMusics()
 
         retrofit = Retrofit.Builder()
             .baseUrl("https://www.googleapis.com/youtube/v3/")
@@ -99,42 +85,33 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
-    private fun loadMusics() {
-        val directory = File(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)!!.absolutePath, "/PlayMusic")
-        if (!directory.exists()) directory.mkdirs()
-
-        val musics = ArrayList<MusicModel>()
-
-        if (directory.listFiles() != null) directory.listFiles()!!.filter { it.name.contains(".mp3") || it.name.contains(".MP3") }.forEach {
-            val mediaMetadataRetriever = MediaMetadataRetriever()
-            mediaMetadataRetriever.setDataSource(it.absolutePath)
-
-            musics.add(
-                MusicModel(
-                it.name.replace(".mp3", ""),
-                mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION).toLong(),
-                it.absolutePath)
-            )
-        }
-
-        getMusicController().musics = musics
-    }
-
     private fun registerButtonsEvents() {
-        menuButton.setOnClickListener { drawer_layout.openDrawer(GravityCompat.START) }
+        main_bottom_nav.setOnNavigationItemSelectedListener(BottomNavigationView.OnNavigationItemSelectedListener {
+            when (it.itemId) {
+                R.id.bottom_home -> {
+                    val transaction = supportFragmentManager.beginTransaction()
+                    transaction.add(R.id.fragmentLayout, MainFragment())
+                    transaction.commit()
+                }
+                R.id.bottom_library -> {
+                    if (getMusicController().musics.isEmpty()) Toast.makeText(
+                        this,
+                        "Você não tem músicas para listar",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    else {
+                        val transaction = supportFragmentManager.beginTransaction()
+                        transaction.add(R.id.fragmentLayout, MusicsFragment())
+                        transaction.commit()
+                    }
+                }
+                R.id.bottom_download -> {
 
-        musicsButton.setOnClickListener {
-            if (getMusicController().musics.isEmpty()) Toast.makeText(
-                this,
-                "Você não tem músicas para listar",
-                Toast.LENGTH_SHORT
-            ).show()
-            else {
-                val transaction = supportFragmentManager.beginTransaction()
-                transaction.add(R.id.fragmentLayout, MusicsFragment())
-                transaction.commit()
+                }
             }
-        }
+
+            return@OnNavigationItemSelectedListener true
+        })
     }
 
     private fun checkPermissions() {

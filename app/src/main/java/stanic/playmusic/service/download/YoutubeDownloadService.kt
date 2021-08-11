@@ -1,4 +1,4 @@
-package stanic.playmusic.utils
+package stanic.playmusic.service.download
 
 import android.app.Activity
 import android.view.View
@@ -11,7 +11,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_youtube_viewer.view.*
 import java.io.File
 
-class DownloadManager(
+class YoutubeDownloadService(
     val view: View,
     private val activity: Activity
 ) {
