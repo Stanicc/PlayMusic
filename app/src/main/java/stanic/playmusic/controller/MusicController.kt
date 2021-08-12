@@ -4,22 +4,23 @@ import android.app.Activity
 import android.graphics.Color
 import android.media.MediaPlayer
 import android.view.View
+import kotlinx.android.synthetic.main.music_schema.view.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import stanic.playmusic.adapter.model.MusicModel
+import stanic.playmusic.model.Track
 import kotlin.coroutines.suspendCoroutine
 
 class MusicController(val activity: Activity? = null) {
 
     val player = MediaPlayer()
-    var musics = ArrayList<MusicModel>()
+    var tracks = ArrayList<Track>()
 
     var stopped = true
-    var playing: MusicModel? = null
+    var playing: Track? = null
 
-    suspend fun <T> play(music: MusicModel) = suspendCoroutine<T> { continuation ->
+    suspend fun <T> play(music: Track) = suspendCoroutine<T> { continuation ->
         stop()
         stopped = false
         playing = music
@@ -62,16 +63,19 @@ class MusicController(val activity: Activity? = null) {
 
     }
 
-    fun playNext(playingNow: MusicModel) {
-        val next = musics.getOrNull(musics.indexOf(playingNow) + 1) ?: musics[0]
+    fun playNext(playingNow: Track) {
+        val next = tracks.getOrNull(tracks.indexOf(playingNow) + 1) ?: tracks[0]
 
-        playing!!.holder!!.play.visibility = View.VISIBLE
-        playing!!.holder!!.stop.visibility = View.GONE
-        playing!!.holder!!.title.setTextColor(Color.parseColor("#FFFFFF"))
-
-        playingNow.holder?.stop?.visibility = View.VISIBLE
-        playingNow.holder?.title?.setTextColor(Color.parseColor("#00FF0D"))
-        playingNow.holder?.play?.visibility = View.GONE
+        playing?.holder?.itemView?.run {
+            music_playButton.visibility = View.VISIBLE
+            music_stopButton.visibility = View.GONE
+            music_title.setTextColor(Color.parseColor("#FFFFFF"))
+        }
+        playingNow.holder?.itemView?.run {
+            music_playButton.visibility = View.VISIBLE
+            music_stopButton.visibility = View.GONE
+            music_title.setTextColor(Color.parseColor("#FFFFFF"))
+        }
 
         stop()
         GlobalScope.launch { play(next) }

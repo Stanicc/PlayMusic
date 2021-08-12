@@ -1,8 +1,6 @@
 package stanic.playmusic.adapter
 
-import android.content.Context
 import android.graphics.Color
-import android.media.MediaMetadataRetriever
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,68 +8,53 @@ import android.widget.ImageButton
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.music_schema.view.*
 import stanic.playmusic.R
-import stanic.playmusic.adapter.model.MusicModel
 import stanic.playmusic.controller.getMusicController
+import stanic.playmusic.model.Track
 import stanic.playmusic.utils.convertTime
 
 class MusicsAdapter(
-    var context: Context,
-    var musics: ArrayList<MusicModel>
-) : RecyclerView.Adapter<MusicsAdapter.ViewHolder>()  {
+    private var tracks: ArrayList<Track>
+) : RecyclerView.Adapter<MusicsViewHolder>()  {
 
-    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val image = view.music_image
-
-        val title = view.music_title
-        val duration = view.music_duration
-
-        val play = view.music_playButton
-        val stop = view.music_stopButton
-
-        val background = view.music_background
-    }
-
-    lateinit var buttonClickListener: ButtonClickListener
+    private lateinit var buttonClickListener: ButtonClickListener
 
     interface ButtonClickListener {
-        fun onClick(button: ImageButton, view: View, music: MusicModel, position: Int, holder: ViewHolder)
+        fun onClick(button: ImageButton, view: View, music: Track, position: Int, holder: MusicsViewHolder)
     }
 
     fun setOnClickListener(listener: ButtonClickListener) {
         this.buttonClickListener = listener
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(context).inflate(R.layout.music_schema, parent, false)
-        return ViewHolder(view)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MusicsViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.music_schema, parent, false)
+        return MusicsViewHolder(view)
     }
 
-    override fun getItemCount() = musics.size
+    override fun getItemCount() = tracks.size
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val music = musics[position]
-        musics[position].holder = holder
+    override fun onBindViewHolder(holder: MusicsViewHolder, position: Int) {
+        val music = tracks[position]
+        val controller = getMusicController()
 
-        holder.title.text = music.title
-        holder.duration.text = convertTime(music.duration)
+        holder.itemView.apply {
+            music.holder = holder
 
-        holder.image
+            music_title.text = music.title
+            music_duration.text = convertTime(music.duration)
+            music_image.setImageBitmap(music.imageBitmap)
 
-        val mediaMetadataRetriever = MediaMetadataRetriever()
-        mediaMetadataRetriever.setDataSource(music.location)
+            music_playButton.setOnClickListener { buttonClickListener.onClick(music_playButton, this, music, position, holder) }
+            music_stopButton.setOnClickListener { buttonClickListener.onClick(music_stopButton, this, music, position, holder) }
 
-        holder.image.setImageBitmap(mediaMetadataRetriever.frameAtTime)
+            if (controller.playing?.location == music.location) {
+                music_stopButton.visibility = View.VISIBLE
+                music_playButton.visibility = View.GONE
 
-        holder.play.setOnClickListener { buttonClickListener.onClick(holder.play, it, music, position, holder) }
-        holder.stop.setOnClickListener { buttonClickListener.onClick(holder.stop, it, music, position, holder) }
-
-        if (getMusicController().playing != null && getMusicController().playing!!.location == music.location) {
-            holder.stop.visibility = View.VISIBLE
-            holder.play.visibility = View.GONE
-            holder.title.setTextColor(Color.parseColor("#00FF0D"))
-
-            getMusicController().playing!!.holder = holder
-        } else holder.stop.visibility = View.GONE
+                music_title.setTextColor(Color.parseColor("#00FF0D"))
+                controller.playing!!.holder = holder
+            } else music_stopButton.visibility = View.GONE
+        }
     }
 
 }

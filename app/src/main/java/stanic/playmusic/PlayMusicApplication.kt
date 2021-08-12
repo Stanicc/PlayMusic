@@ -4,9 +4,9 @@ import android.app.Application
 import android.media.MediaMetadataRetriever
 import android.os.Environment
 import com.yausername.youtubedl_android.YoutubeDL
-import stanic.playmusic.adapter.model.MusicModel
 import stanic.playmusic.controller.MusicController
 import stanic.playmusic.controller.getMusicController
+import stanic.playmusic.model.Track
 import java.io.File
 import java.io.FileFilter
 
@@ -16,13 +16,13 @@ class PlayMusicApplication : Application() {
         super.onCreate()
 
         MusicController.INSTANCE = MusicController()
-        loadMusics()
+        loadContent()
 
         YoutubeDL.getInstance().init(applicationContext)
     }
 
-    private fun loadMusics() {
-        val musics = ArrayList<MusicModel>()
+    private fun loadContent() {
+        val tracks = ArrayList<Track>()
         val directory = File(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)!!.absolutePath, "/tracks")
         if (!directory.exists()) directory.mkdirs()
 
@@ -30,15 +30,16 @@ class PlayMusicApplication : Application() {
             val mediaMetadataRetriever = MediaMetadataRetriever()
             mediaMetadataRetriever.setDataSource(it.absolutePath)
 
-            musics.add(
-                MusicModel(
+            tracks.add(
+                Track(
                     it.nameWithoutExtension,
                     mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)?.toLong() ?: 0L,
+                    mediaMetadataRetriever.frameAtTime,
                     it.absolutePath)
             )
         }
 
-        getMusicController().musics = musics
+        getMusicController().tracks = tracks
     }
 
 }
