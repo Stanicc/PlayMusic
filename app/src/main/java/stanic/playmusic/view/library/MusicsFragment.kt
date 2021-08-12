@@ -13,15 +13,20 @@ import androidx.recyclerview.widget.RecyclerView
 import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter
 import jp.wasabeef.recyclerview.animators.FadeInDownAnimator
 import kotlinx.android.synthetic.main.fragment_musics.view.*
+import kotlinx.android.synthetic.main.music_schema.view.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import stanic.playmusic.R
 import stanic.playmusic.adapter.MusicsAdapter
-import stanic.playmusic.adapter.model.MusicModel
+import stanic.playmusic.adapter.MusicsViewHolder
+import stanic.playmusic.controller.MusicController
 import stanic.playmusic.controller.getMusicController
+import stanic.playmusic.model.Track
 import stanic.playmusic.view.MainActivity
 
 class MusicsFragment : Fragment() {
+
+    lateinit var controller: MusicController
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,55 +37,59 @@ class MusicsFragment : Fragment() {
                 requireActivity().startActivity(Intent(requireActivity(), MainActivity::class.java))
             }
 
-            val controller = getMusicController()
+            controller = getMusicController()
 
-            requireActivity().runOnUiThread {
-                musicsList = music_recycler
+            val layoutMusicsAdapter = LinearLayoutManager(requireContext())
+            val adapter = MusicsAdapter(controller.tracks)
 
-                val layoutMusicsAdapter = LinearLayoutManager(requireContext())
-                val adapter = MusicsAdapter(requireContext(), getMusicController().musics)
+            musicsList = music_recycler
+            musicsList.layoutManager = layoutMusicsAdapter
+            musicsList.adapter = AlphaInAnimationAdapter(adapter)
+            musicsList.itemAnimator = FadeInDownAnimator()
 
-                musicsList.layoutManager = layoutMusicsAdapter
-                musicsList.adapter = AlphaInAnimationAdapter(adapter)
-                musicsList.itemAnimator = FadeInDownAnimator()
+            setupAdapterClickListener(adapter)
+        }
+    }
 
-                adapter.setOnClickListener(object : MusicsAdapter.ButtonClickListener {
-                    override fun onClick(
-                        button: ImageButton,
-                        view: View,
-                        music: MusicModel,
-                        position: Int,
-                        holder: MusicsAdapter.ViewHolder
-                    ) {
-                        if (button == holder.play) {
-                            if (controller.playing != null) {
-                                controller.playing!!.holder!!.play.visibility = View.VISIBLE
-                                controller.playing!!.holder!!.stop.visibility = View.GONE
+    private fun setupAdapterClickListener(adapter: MusicsAdapter) {
+        adapter.setOnClickListener(object : MusicsAdapter.ButtonClickListener {
+            override fun onClick(
+                button: ImageButton,
+                view: View,
+                music: Track,
+                position: Int,
+                holder: MusicsViewHolder
+            ) {
+                if (button == view.music_playButton) {
+                    if (controller.playing != null) {
+                        controller.playing?.holder?.run {
+                            itemView.music_playButton.visibility = View.VISIBLE
+                            itemView.music_stopButton.visibility = View.GONE
 
-                                controller.playing!!.holder!!.title.setTextColor(Color.parseColor("#FFFFFF"))
-                            }
-                            GlobalScope.launch {
-                                controller.play<MusicModel>(music).runCatching {
-                                    requireActivity().runOnUiThread {
-                                        holder.stop.visibility = View.VISIBLE
-                                        holder.title.setTextColor(Color.parseColor("#00FF0D"))
-                                        button.visibility = View.GONE
-                                    }
-                                }
-                            }
-                        } else {
-                            controller.stop()
-
-                            holder.stop.visibility = View.GONE
-                            holder.play.visibility = View.VISIBLE
-                            holder.title.setTextColor(Color.parseColor("#FFFFFF"))
-
-                            controller.playing = null
+                            itemView.music_title.setTextColor(Color.parseColor("#FFFFFF"))
                         }
                     }
-                })
+                    GlobalScope.launch {
+                        controller.play<Track>(music).runCatching {
+                            requireActivity().runOnUiThread {
+                                view.music_stopButton.visibility = View.VISIBLE
+                                button.visibility = View.GONE
+
+                                view.music_title.setTextColor(Color.parseColor("#00FF0D"))
+                            }
+                        }
+                    }
+                } else {
+                    controller.stop()
+
+                    view.music_stopButton.visibility = View.GONE
+                    view.music_playButton.visibility = View.VISIBLE
+                    view.music_title.setTextColor(Color.parseColor("#FFFFFF"))
+
+                    controller.playing = null
+                }
             }
-        }
+        })
     }
 
     companion object {
